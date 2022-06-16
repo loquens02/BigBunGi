@@ -495,7 +495,7 @@ from sklearn.preprocessing import StandardScaler, MinMaxScaler, RobustScaler, La
 
 # [python type to factor](https://stackoverflow.com/a/27023500) dtype="category"
 
-# In[381]:
+# In[387]:
 
 
 ### 시간 측정, 데이터 로드, 종속-독립변수 분리
@@ -623,16 +623,6 @@ X['am_manual']= X['am_manual'].astype('category')
 X['vs']= X['vs'].astype('category')
 # print(X.info(), '-----'))
 
-## 기존 데이터에 범위 적용
-# print(X.describe(), '-----')) # 나중에는 print 가 잘 안 보인다. 지울 예정인건 표시해두자.
-# targetCols= X.columns[(X.dtypes=='float64') | (X.dtypes=='int64')] # 탐탁지 않음.
-targetCols= X.columns[(X.dtypes=='float64')] # 정수형, 범주형은 안 건드리고 싶었다.
-# print(targetCols)
-for col in targetCols:
-    X[col]= rangeScaler('MinMax', X[[col]]) # 종속변수 연속형이면 주로 MinMax 
-    # (범주형이면 Standard, 이상치 안 잡고 싶다면 Robust)
-
-print(X, '-----')
 
 ## LabelEncoder 연습
 face= ['happy','sad','soso']
@@ -668,14 +658,62 @@ encoder= LabelEncoder()
 
 
 
-# In[ ]:
-
-
-
-
-
 # ### 파생변수
 # p.272 / '22.6.16 16:20
+# 1. wt 무게 등급 구분 - 범위 적용하기 전에 하자
+
+# In[393]:
+
+
+condition= X['wt'] < 3.3
+X.loc[condition, 'wt_class']= 0 # 작
+X.loc[~condition, 'wt_class']= 1 #크거나 같
+X.drop(columns='wt',inplace=True)
+print(X, '-----')
+
+
+# In[397]:
+
+
+X['wt_class']= X['wt_class'].astype('int64').astype('category') # float 에 category 는 deprecated
+print(X)
+
+
+# qsec 1/4mile 도달 시간 => 1mile 로
+# - ??? 모델링할 때 상수배는 아무 영향도 없을건디. 표준화하면 차이도 없을거고
+
+# In[402]:
+
+
+X['qsec_4']= X['qsec']*4
+print(X[['qsec_4','qsec']])
+X.drop(columns='qsec', inplace=True)
+print(X)
+
+
+# In[404]:
+
+
+## 기존 데이터에 범위 적용 
+from sklearn.preprocessing import MinMaxScaler, StandardScaler, RobustScaler, LabelEncoder
+# print(X.describe(), '-----'))
+def rangeScaler(scalers, columnDataFrame):
+    if scalers=='MinMax':
+        scaler= MinMaxScaler()
+    elif scalers=='Standard':
+        scaler= StandardScaler()
+    elif scalers=='Robust':
+        scaler= RobustScaler()
+    #     help(scaler.fit_transform)
+    scaledDf= pd.DataFrame(scaler.fit_transform(columnDataFrame))
+    return scaledDf
+# print(X.describe(), '-----'))
+targetCols= X.columns[(X.dtypes=='float64')]
+for col in targetCols:
+    X[col]= rangeScaler('MinMax', X[[col]]) # MinMax 종속 연속형
+
+print(X, '-----')
+
 
 # In[ ]:
 
