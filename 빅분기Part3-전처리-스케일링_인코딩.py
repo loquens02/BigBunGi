@@ -579,9 +579,8 @@ def outlierReplace(data):
 #         print(f"BeforeMinMS: {data.loc[ data[col]<minBms[col],col]}, minBms: {minBms[col]:.7}") 
         data.loc[ data[col]<minBms[col], col]= minBms[col]
     for col in maxMScols:
-        pass
-        # print(f"BeforeMaxMS: {data.loc[ data[col]>maxBms[col],col]}, maxBms: {maxBms[col]:.7}")
-        # data.loc[ data[col]>maxBms[col], col]= maxBms[col] # 대상 컬럼이 없다
+#         print(f"BeforeMaxMS: {data.loc[ data[col]>maxBms[col],col]}, maxBms: {maxBms[col]:.7}")
+        data.loc[ data[col]>maxBms[col], col]= maxBms[col]
     for col in minIQRcols:
 #         print(f"BeforeMinIQR: {data.loc[ data[col]<minBiqr[col],col]}, minBiqr: {minBiqr[col]:.7}")
         data.loc[ data[col]<minBiqr[col], col]= minBiqr[col]
