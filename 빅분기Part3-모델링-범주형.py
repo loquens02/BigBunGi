@@ -373,3 +373,48 @@ model= modelingClassifier('mlp')
 # predictTestClassifier(model, 'value')
 predictTestClassifier(model, 'proba')
 
+
+# In[ ]:
+
+
+
+
+
+# In[165]:
+
+
+get_ipython().system('ls')
+
+
+# # 제출방법- 작업 1유형
+
+# In[168]:
+
+
+# 값 하나만!! 나머지는 다 주석처리
+print(roc_auc_score(y_test, y_test_predict))
+
+
+# # 제출방법- 작업 2유형
+# p.309
+
+# In[170]:
+
+
+# 파생변수 만졌으면 컬럼명도 rename 해야 한다고 함
+
+# 제출할 대상이 DataFrame 인지 아닌지 확인
+print(type(y_test_proba))
+# 아니면 DataFrame 으로 변경후 to_csv
+# 이 때, 반드시!! 인덱스 번호는 False 로 둔다. 
+pd.DataFrame(y_test_proba).to_csv('data/job2_y_test_proba.csv', index=False)
+
+
+# In[183]:
+
+
+# help(dir)
+# from sklearn import tree #help(tree)
+# dir(DecisionTreeClassifier) # 정보가 영 없다.
+# help(RandomForestClassifier) # 3번째 줄에 n_estimators 있다
+
